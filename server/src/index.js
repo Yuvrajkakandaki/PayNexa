@@ -80,14 +80,29 @@ app.use(requestLogger);
 // X-Content-Type-Options, X-Frame-Options, HSTS, etc.
 app.use(helmet());
 
-// CORS — only allow the origin declared in FRONTEND_URL.
-// Falls back to localhost:5173 so local development works without .env changes.
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+// CORS — allow declared FRONTEND_URL as well as localhost / 127.0.0.1 on Vite ports
+const configuredOrigin = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "");
+const allowedOrigins = [
+  configuredOrigin,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+];
+
 app.use(
   cors({
-    origin: allowedOrigin,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, server-to-server, Postman)
+      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
@@ -890,7 +905,7 @@ async function startServer() {
 
     app.listen(PORT, () => {
       console.log(`PayNexa server running on port ${PORT}`);
-      console.log(`CORS allowed origin: ${allowedOrigin}`);
+      console.log(`CORS allowed origins: ${allowedOrigins.join(", ")}`);
     });
   } catch (error) {
     console.error("Server startup failed:", error.message);
