@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
 import { AppError } from "../errors/AppError.js";
 
-const DEFAULT_JWT_SECRET = "paynexa_jwt_secret_dev_key_min_32_characters_long_123456";
-
 export function getJwtSecret() {
-  return process.env.JWT_SECRET || DEFAULT_JWT_SECRET;
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET is not set. Add it to server/.env.");
+  }
+  return secret;
 }
 
 /**

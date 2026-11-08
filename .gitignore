@@ -183,3 +183,8 @@ Thumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Patch and diff files
+*.patch
+*.diff
+

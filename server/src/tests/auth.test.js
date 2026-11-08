@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { signToken, getJwtSecret, authenticate } from "../middleware/authenticate.js";
 
+process.env.JWT_SECRET ||= "test_jwt_secret_with_at_least_32_characters_ok";
+
 describe("Authentication — Password Hashing & Comparison", () => {
   it("hashes password with a random salt (different hashes for same input)", async () => {
     const password = "SecurePassword123!";

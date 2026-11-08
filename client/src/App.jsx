@@ -4,7 +4,7 @@ import InvoiceDetailModal from "./components/InvoiceDetailModal.jsx";
 import ConfirmDialog from "./components/ConfirmDialog.jsx";
 import "./App.css";
 
-const API_URL = "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function App() {
   // Authentication states (Phase 3)

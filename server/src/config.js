@@ -31,6 +31,12 @@ export function validateConfig(env = process.env) {
     );
   }
 
+  if (env.NODE_ENV === "production" && !(env.PAYPAL_WEBHOOK_ID && env.PAYPAL_WEBHOOK_ID.trim())) {
+    throw new Error(
+      "PAYPAL_WEBHOOK_ID is required in production so webhook signatures can be verified."
+    );
+  }
+
   if (env.JWT_SECRET && env.JWT_SECRET.trim().length < 32) {
     throw new Error(
       "JWT_SECRET must be at least 32 characters long for cryptographic security."

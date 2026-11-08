@@ -43,6 +43,10 @@ if (process.env.NODE_ENV !== "test") {
   try {
     validateConfig();
   } catch (err) {
+    if (process.env.NODE_ENV === "production") {
+      console.error("[Configuration Error]:", err.message);
+      process.exit(1);
+    }
     console.warn("⚠️ [Configuration Warning]:", err.message);
   }
 }
@@ -345,7 +349,7 @@ app.post(
     // If this requestId was already used, return the existing invoice immediately.
     // This handles double-clicks and accidental re-submissions.
 
-    const existing = await Invoice.findOne({ requestId: requestId.trim() }).lean();
+    const existing = await Invoice.findOne({ requestId: requestId.trim(), userId: req.user.userId }).lean();
 
     if (existing) {
       // If it finished successfully, return it as if it just succeeded
@@ -913,4 +917,9 @@ async function startServer() {
   }
 }
 
-startServer();
+export { app };
+
+// Only start listening when this file is run directly (not when imported by tests)
+if (process.env.NODE_ENV !== "test") {
+  startServer();
+}

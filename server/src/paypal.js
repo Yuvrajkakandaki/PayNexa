@@ -271,6 +271,13 @@ export async function verifyWebhookSignature({
   webhookId = process.env.PAYPAL_WEBHOOK_ID,
 }) {
   // If webhook ID is not configured (e.g. during dev/sandbox without registered webhook), log warning and bypass
+  if (!webhookId && process.env.NODE_ENV === "production") {
+    console.error(
+      "[PayPal Webhook] PAYPAL_WEBHOOK_ID is not configured; rejecting webhook in production."
+    );
+    return false;
+  }
+
   if (!webhookId) {
     console.warn(
       "[PayPal Webhook] PAYPAL_WEBHOOK_ID is not configured in .env; skipping cryptographic verification."
