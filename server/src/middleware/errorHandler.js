@@ -39,9 +39,9 @@ export function errorHandler(err, req, res, next) {
     return res.status(400).json({ error: messages.join(" ") });
   }
 
-  // Invalid ObjectId cast (e.g. /api/invoices/not-an-id)
-  if (err.name === "CastError" && err.kind === "ObjectId") {
-    return res.status(400).json({ error: "Invalid ID format." });
+  // Invalid schema type cast (e.g. /api/invoices/not-an-id or invalid query cast)
+  if (err.name === "CastError") {
+    return res.status(400).json({ error: err.kind === "ObjectId" ? "Invalid ID format." : "Invalid request data format." });
   }
 
   // Duplicate unique-index key
@@ -89,7 +89,14 @@ export function errorHandler(err, req, res, next) {
     //   "PayPal API error (401): {...}"
     //   "PayPal authentication failed (401): invalid_client"
     // We extract the PayPal reason but never expose our credentials.
-    if (msg.includes("paypal")) {
+    if (
+      msg.includes("paypal api") ||
+      msg.includes("paypal auth") ||
+      msg.includes("paypal request") ||
+      msg.includes("paypal returned") ||
+      msg.includes("paypal webhook") ||
+      msg.startsWith("paypal")
+    ) {
       // Try to pull the human-readable reason from the message
       const reasonMatch = err.message.match(/:\s*(.+)$/);
       const reason = reasonMatch ? reasonMatch[1].trim() : "Unknown PayPal error.";

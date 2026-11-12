@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 import Invoice from "./models/Invoice.js";
 
 export async function connectDatabase() {
-  // Strip MongoDB operators (e.g. $gt, $where) from all query filter objects.
-  // This prevents NoSQL injection: if a user sends { "email": { "$gt": "" } }
-  // Mongoose will ignore the $ key instead of using it as an operator.
-  mongoose.set("sanitizeFilter", true);
-
   const mongoURI = process.env.MONGODB_URI;
 
   if (!mongoURI) {
