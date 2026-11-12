@@ -151,7 +151,7 @@ function App() {
 
   // Fetch saved invoices from MongoDB with Auth header & pagination (Task 1.5 & 3.6)
   const fetchInvoices = useCallback(
-    async (targetPage = page, currentSearch = search, currentStatus = statusFilter) => {
+    async (targetPage = 1, currentSearch = "", currentStatus = "ALL") => {
       if (!token) return;
       setHistoryLoading(true);
       setHistoryError("");
@@ -201,27 +201,39 @@ function App() {
         setHistoryLoading(false);
       }
     },
-    [token, page, limit, search, statusFilter, handleLogout]
+    [token, limit, handleLogout]
   );
 
-  // Validate session / fetch initial data on mount
-  useEffect(() => {
-    if (token) {
-      fetchInvoices(1, search, statusFilter);
-      fetchAnalytics();
-    }
-  }, [token, fetchAnalytics]);
+  const isInitialInvoicesMount = useRef(true);
 
-  // Handle search or filter change with debounce
+  // Validate session / fetch initial analytics on mount
   useEffect(() => {
     if (!token) return;
+    const timer = setTimeout(() => {
+      fetchAnalytics();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [token, fetchAnalytics]);
+
+  // Handle search or filter change with debounce (immediate on mount)
+  useEffect(() => {
+    if (!token) return;
+
+    if (isInitialInvoicesMount.current) {
+      isInitialInvoicesMount.current = false;
+      const initialTimer = setTimeout(() => {
+        fetchInvoices(1, search, statusFilter);
+      }, 0);
+      return () => clearTimeout(initialTimer);
+    }
+
     const timer = setTimeout(() => {
       setPage(1);
       fetchInvoices(1, search, statusFilter);
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [token, search, statusFilter]);
+  }, [token, search, statusFilter, fetchInvoices]);
 
   // Pagination navigation handler
   const handlePageChange = (newPage) => {

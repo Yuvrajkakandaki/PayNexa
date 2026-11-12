@@ -4,7 +4,7 @@
 
 ### Next-Generation AI Invoicing System
 
-[![Tests](https://img.shields.io/badge/tests-87%20passed%20%7C%20100%25-success?style=for-the-badge&logo=node.js)](file:///c:/Users/yuvraj/OneDrive/Documents/Desktop/PayNexa/server/src/tests)
+[![Tests](https://img.shields.io/badge/tests-109%20passed-success?style=for-the-badge&logo=node.js)](./server/src/tests)
 [![Node.js](https://img.shields.io/badge/node.js-v20%2B-blue?style=for-the-badge&logo=node.js)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/react-19-61dafb?style=for-the-badge&logo=react)](https://react.dev/)
 [![PayPal](https://img.shields.io/badge/PayPal-Sandbox%20API-003087?style=for-the-badge&logo=paypal)](https://developer.paypal.com/)
@@ -27,10 +27,10 @@
 - **✦ Automated PayPal Dispatch**: Dispatches payable, professional invoices directly through the PayPal Sandbox API.
 - **✦ Real-Time Webhook Synchronization**: Asynchronous PayPal webhook notifications (`INVOICING.INVOICE.PAID`, `CANCELLED`, `REFUNDED`) update MongoDB invoice statuses automatically with cryptographic signature verification.
 - **✦ Enterprise Multi-Tenancy**: Secure user accounts with 12-round bcrypt password hashing, signed 7-day JWT tokens, and strict per-user data isolation.
-- **✦ Live Revenue Analytics**: Dashboard stats dynamically calculated from backend database records, with automatic multi-currency breakdowns (USD, EUR, GBP, INR).
+- **✦ Live Revenue Analytics**: Dashboard stats dynamically calculated from backend database records, with automatic multi-currency breakdowns (USD, EUR, GBP).
 - **✦ CSV Export & Full History**: Export complete historical billing records to spreadsheet-compatible CSV with one click.
 - **✦ Server-Side Search & Pagination**: Query database records with instant debounced search and status filtering.
-- **✦ Production-Grade Security**: Brute-force rate limiting on authentication routes, Zod input schema validation, HTTP security headers via Helmet, and SHA-256 idempotency protection.
+- **✦ Production-Grade Security**: Brute-force rate limiting on authentication routes, Zod input schema validation, HTTP security headers via Helmet, and duplicate-submission protection via a unique per-request `requestId`.
 
 ---
 
@@ -145,9 +145,9 @@ npm test
 ```
 
 ```text
-ℹ tests 87
-ℹ suites 17
-ℹ pass 87
+ℹ tests 109
+ℹ suites 25
+ℹ pass 109
 ℹ fail 0
 ```
 

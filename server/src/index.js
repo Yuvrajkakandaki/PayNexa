@@ -162,18 +162,6 @@ app.use("/api", generalLimiter);
 // ---------------------------------------------------------------------------
 
 /**
- * Generates a deterministic SHA-256 idempotency key from the
- * normalised prompt + clientEmail, so identical requests from the
- * same client cannot accidentally create duplicate PayPal invoices.
- */
-function buildIdempotencyKey(prompt, clientEmail) {
-  return crypto
-    .createHash("sha256")
-    .update(`${prompt.trim().toLowerCase()}|${clientEmail.trim().toLowerCase()}`)
-    .digest("hex");
-}
-
-/**
  * Calculates the total amount for an invoice items array.
  * Returns a number rounded to 2 decimal places.
  */
@@ -748,7 +736,10 @@ app.post(
   "/api/invoices/sync",
   authenticate,
   asyncWrap(async (req, res) => {
-    const invoices = await Invoice.find({ userId: req.user.userId }).lean();
+    const invoices = await Invoice.find({
+      userId: req.user.userId,
+      paypalInvoiceId: { $exists: true, $nin: [null, ""] },
+    }).lean();
 
     const results = [];
     let updated = 0;
