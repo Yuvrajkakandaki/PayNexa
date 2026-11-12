@@ -36,7 +36,7 @@ export default function AuthPage({ onAuthSuccess, API_URL }) {
     } catch (err) {
       setError(
         err.message === "Failed to fetch"
-          ? "Unable to reach the server. Make sure port 5000 is running."
+          ? "Unable to connect to the backend server. Please verify your connection or wait a moment while the server wakes up."
           : err.message
       );
     } finally {

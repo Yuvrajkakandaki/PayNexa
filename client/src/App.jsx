@@ -4,7 +4,8 @@ import InvoiceDetailModal from "./components/InvoiceDetailModal.jsx";
 import ConfirmDialog from "./components/ConfirmDialog.jsx";
 import "./App.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const RAW_API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = RAW_API_URL.replace(/\/+$/, "");
 
 function App() {
   // Authentication states (Phase 3)
@@ -194,7 +195,7 @@ function App() {
       } catch (err) {
         setHistoryError(
           err.message === "Failed to fetch"
-            ? "Cannot connect to the backend. Check that port 5000 is running."
+            ? "Unable to connect to the backend server. Please verify your connection or wait a moment while the server wakes up."
             : err.message
         );
       } finally {
@@ -377,7 +378,7 @@ function App() {
     } catch (err) {
       setError(
         err.message === "Failed to fetch"
-          ? "Cannot connect to backend server. Make sure port 5000 is running."
+          ? "Unable to connect to the backend server. Please verify your connection or wait a moment while the server wakes up."
           : err.message
       );
     } finally {
@@ -451,7 +452,7 @@ function App() {
     } catch (err) {
       setError(
         err.message === "Failed to fetch"
-          ? "Cannot connect to the backend. Make sure the server is running on port 5000."
+          ? "Unable to connect to the backend server. Please verify your connection or wait a moment while the server wakes up."
           : err.message
       );
       showToast(err.message, "error");
